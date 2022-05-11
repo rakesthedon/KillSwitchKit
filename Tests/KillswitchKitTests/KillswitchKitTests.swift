@@ -5,7 +5,7 @@ final class KillswitchKitTests: XCTestCase {
     func testUrlQueryBuild() {
         let service = KillSwitchApiService()
         
-        guard let url = service.buildUrlQuery(from: "someurl.com", scheme: "http", path: "path", parameters: ["123":"456"]) else {
+        guard let url = service.buildUrlQuery(from: "someurl.com", scheme: "http", port: nil, path: "path", parameters: ["123":"456"]) else {
             XCTFail()
             return
         }

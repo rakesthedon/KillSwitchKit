@@ -19,10 +19,11 @@ public final class KillSwitchApiService {
     public init() {
     }
     
-    func buildUrlQuery(from host: String, scheme: String = "http", path: String?, parameters: [String: String]) -> URL? {
+    func buildUrlQuery(from host: String, scheme: String = "http", port: Int?, path: String?, parameters: [String: String]) -> URL? {
         var urlComponents = URLComponents()
         
         urlComponents.scheme = scheme
+        urlComponents.port = port
         urlComponents.host = host
         
         if var path = path {
@@ -40,7 +41,7 @@ public final class KillSwitchApiService {
     }
 
     public func fetchKillswitches(parameters: [String: String] = [:], completion: @escaping ([String: KillswitchPayload], Error?) -> Void) {
-        guard let url = buildUrlQuery(from: "localhost:8080", scheme: "http", path: "/killswitch/available", parameters: parameters) else {
+        guard let url = buildUrlQuery(from: "localhost", scheme: "http", port: 8080, path: "/killswitch/available", parameters: parameters) else {
             completion([:], ApiError.invalidURL)
             return
         }
