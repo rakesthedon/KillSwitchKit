@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "killswitchcorekit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/rakesthedon/KillSwitchCoreKit.git",
+      "state" : {
+        "revision" : "8316ea0cc8772013f5c05a1f37c3b5b8b57bd0b3",
+        "version" : "0.0.2"
+      }
+    }
+  ],
+  "version" : 2
+}
