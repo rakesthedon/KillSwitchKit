@@ -12,7 +12,7 @@ public final class KSKitConfig {
     public var port: Int?
     public var scheme: String?
 
-    static let shared: KSKitConfig = .init()
+    public static let shared: KSKitConfig = .init()
 
     private init() {}
 }
