@@ -11,6 +11,7 @@ import KillSwitchCoreKit
 public final class KillSwitchApiService {
     
     public enum ApiError: Error {
+        case invalidConfig
         case invalidPayload
         case invalidURL
         case invalidResponse
@@ -18,30 +19,17 @@ public final class KillSwitchApiService {
     
     public init() {
     }
-    
-    func buildUrlQuery(from host: String, scheme: String = "http", port: Int?, path: String?, parameters: [String: String]) -> URL? {
-        var urlComponents = URLComponents()
-        
-        urlComponents.scheme = scheme
-        urlComponents.port = port
-        urlComponents.host = host
-        
-        if var path = path {
-            if !path.starts(with: "/") {
-                path = "/" + path
-            }
-            urlComponents.path = path
-        }
-        
-        urlComponents.queryItems = parameters.compactMap { key, value in
-            URLQueryItem(name: key, value: value)
-        }
-        
-        return urlComponents.url
-    }
 
     public func fetchKillswitches(parameters: [String: String] = [:], completion: @escaping ([String: KillswitchPayload], Error?) -> Void) {
-        guard let url = buildUrlQuery(from: "localhost", scheme: "http", port: 8080, path: "/killswitch/available", parameters: parameters) else {
+        guard
+            let host = KSKitConfig.shared.host,
+            let scheme = KSKitConfig.shared.scheme
+        else {
+            completion([:], ApiError.invalidConfig)
+            return
+        }
+        
+        guard let url = buildUrlQuery(from: host, scheme: scheme, port: KSKitConfig.shared.port, path: "/killswitch/available", parameters: parameters) else {
             completion([:], ApiError.invalidURL)
             return
         }
@@ -64,5 +52,30 @@ public final class KillSwitchApiService {
                 completion([:], error)
             }
         }.resume()
+    }
+}
+
+// MARK: - Private
+extension KillSwitchApiService {
+    
+    func buildUrlQuery(from host: String, scheme: String = "https", port: Int?, path: String?, parameters: [String: String]) -> URL? {
+        var urlComponents = URLComponents()
+        
+        urlComponents.scheme = scheme
+        urlComponents.port = port
+        urlComponents.host = host
+        
+        if var path = path {
+            if !path.starts(with: "/") {
+                path = "/" + path
+            }
+            urlComponents.path = path
+        }
+        
+        urlComponents.queryItems = parameters.compactMap { key, value in
+            URLQueryItem(name: key, value: value)
+        }
+        
+        return urlComponents.url
     }
 }
